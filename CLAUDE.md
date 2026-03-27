@@ -253,12 +253,40 @@ npm run test:unit -- --coverage
 - [Vitest Documentation](https://vitest.dev/)
 - [VueUse Documentation](https://vueuse.org/)
 
+## 🪟 Модальные окна
+
+В проекте реализована система модальных окон, похожая на сервис Dialog в Angular.
+
+### Использование (аналог Angular Dialog Service):
+```typescript
+import { useModal } from '@/composables/useModal'
+import TaskFormModal from '@/components/tasks/TaskFormModal.vue'
+
+const modal = useModal()
+
+// Открыть модалку и получить результат
+const result = await modal.open<Task>(
+  TaskFormModal,
+  { task },  // props
+  { title: 'Edit Task', size: 'md' }  // options
+)
+```
+
+### Файлы системы:
+- `stores/modal.ts` - Store для управления модалками
+- `composables/useModal.ts` - Composable (аналог Angular service)
+- `components/common/ModalContainer.vue` - Контейнер для рендера
+- `docs/MODAL_SYSTEM.md` - Полная документация
+
+См. `docs/MODAL_SYSTEM.md` для подробной документации и примеров.
+
 ## 💡 Советы для работы с Claude
 
 1. **Контекст:** При обращении к Claude упоминайте конкретные файлы или компоненты
 2. **Тестирование:** Просите создавать тесты для новых компонентов
 3. **Типы:** Всегда просите типизировать код
 4. **Документация:** Просите обновлять этот файл при добавлении новых фич
+5. **Модалки:** Используйте `useModal()` для работы с модальными окнами
 
 ## 🔄 История изменений
 
