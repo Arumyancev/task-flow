@@ -9,7 +9,6 @@ const { t } = useI18n()
   <div class="calendar">
     <div class="calendar-header">
       <h1>{{ t('nav.calendar') }}</h1>
-      <p class="subtitle">Task Timeline</p>
     </div>
 
     <div class="calendar-placeholder">

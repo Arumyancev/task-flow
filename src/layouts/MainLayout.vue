@@ -58,18 +58,17 @@ const route = useRoute()
 
 <style scoped>
 .layout {
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .header {
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  flex: 0 0 auto;
 }
 
 .header-content {
@@ -168,11 +167,12 @@ const route = useRoute()
 }
 
 .main {
-  flex: 1;
+  flex: 1 1 auto;
   max-width: 1400px;
   width: 100%;
   margin: 0 auto;
   padding: var(--spacing-xl) var(--spacing-lg);
+  overflow: auto;
 }
 
 @media (max-width: 768px) {

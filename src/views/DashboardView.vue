@@ -50,7 +50,6 @@ async function openEditTaskModal(task: Task) {
     <div class="dashboard-header">
       <div>
         <h1>{{ t('nav.dashboard') }}</h1>
-        <p class="subtitle">{{ t('common.appName') }}</p>
       </div>
       <button class="btn-add" @click="openAddTaskModal">
         <AppIcon name="Plus" :size="20" />
@@ -61,20 +60,6 @@ async function openEditTaskModal(task: Task) {
     <div class="dashboard-content">
       <AppCard :title="t('stats.total')" icon="📊">
         <TaskStats :stats="stats" />
-      </AppCard>
-
-      <AppCard :title="t('task.title')" icon="📋" class="recent-tasks">
-        <div v-if="recentTasks.length === 0" class="empty-state">
-          {{ t('common.noData') }}
-        </div>
-        <div v-else class="tasks-list">
-          <TaskCard
-            v-for="task in recentTasks"
-            :key="task.id"
-            :task="task"
-            @click="openEditTaskModal(task)"
-          />
-        </div>
       </AppCard>
     </div>
   </div>

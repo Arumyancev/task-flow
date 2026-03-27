@@ -180,7 +180,8 @@ body {
 
 /* App Container */
 #app {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* Links */

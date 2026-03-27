@@ -22,7 +22,6 @@ const columns = [
   <div class="kanban">
     <div class="kanban-header">
       <h1>{{ t('nav.kanban') }}</h1>
-      <p class="subtitle">Drag & Drop Task Management</p>
     </div>
 
     <div class="kanban-board">
