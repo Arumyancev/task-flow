@@ -4,6 +4,7 @@ import { useLocale } from '@/composables/useLocale'
 import { Theme, Locale } from '@/types'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import AppIcon from '@/components/common/AppIcon.vue'
 
 const { currentTheme, toggleTheme } = useTheme()
 const { currentLocale, setLocale } = useLocale()
@@ -43,8 +44,8 @@ const route = useRoute()
             <option :value="Locale.ZH">{{ t('locale.zh') }}</option>
           </select>
           <button @click="toggleTheme" class="theme-toggle" :title="t('theme.toggle')">
-            <span v-if="currentTheme === Theme.LIGHT">🌙</span>
-            <span v-else>☀️</span>
+            <AppIcon v-if="currentTheme === Theme.LIGHT" name="Moon" :size="20" />
+            <AppIcon v-else name="Sun" :size="20" />
           </button>
         </div>
       </div>

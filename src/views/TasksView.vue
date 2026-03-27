@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useTasksStore } from '@/stores/tasks'
 import { storeToRefs } from 'pinia'
 import TaskCard from '@/components/common/TaskCard.vue'
+import AppIcon from '@/components/common/AppIcon.vue'
 import { useI18n } from 'vue-i18n'
 import { TaskStatus, TaskPriority } from '@/types'
 
@@ -71,7 +72,9 @@ const filteredTasks = computed(() => {
     <div class="tasks-list">
       <TaskCard v-for="task in filteredTasks" :key="task.id" :task="task" />
       <div v-if="filteredTasks.length === 0" class="empty-state">
-        <div class="empty-icon">🔍</div>
+        <div class="empty-icon">
+          <AppIcon name="Search" :size="64" stroke-width="1.5" />
+        </div>
         <p>{{ t('common.noData') }}</p>
       </div>
     </div>
@@ -149,8 +152,11 @@ const filteredTasks = computed(() => {
 }
 
 .empty-icon {
-  font-size: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: var(--spacing-md);
+  color: var(--color-text-muted);
 }
 
 .empty-state p {

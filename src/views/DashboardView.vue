@@ -5,6 +5,7 @@ import AppCard from '@/components/common/AppCard.vue'
 import TaskStats from '@/components/dashboard/TaskStats.vue'
 import TaskCard from '@/components/common/TaskCard.vue'
 import TaskFormModal from '@/components/tasks/TaskFormModal.vue'
+import AppIcon from '@/components/common/AppIcon.vue'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/useModal'
 import type { Task } from '@/types'
@@ -52,7 +53,7 @@ async function openEditTaskModal(task: Task) {
         <p class="subtitle">{{ t('common.appName') }}</p>
       </div>
       <button class="btn-add" @click="openAddTaskModal">
-        <span class="btn-icon">+</span>
+        <AppIcon name="Plus" :size="20" />
         {{ t('task.addTask') }}
       </button>
     </div>
@@ -146,8 +147,5 @@ async function openEditTaskModal(task: Task) {
   box-shadow: var(--shadow-md);
 }
 
-.btn-icon {
-  font-size: var(--font-xl);
-  line-height: 1;
-}
+
 </style>

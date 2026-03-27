@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import AppIcon from '@/components/common/AppIcon.vue'
 
 const { t } = useI18n()
 </script>
@@ -12,7 +13,9 @@ const { t } = useI18n()
     </div>
 
     <div class="calendar-placeholder">
-      <div class="placeholder-icon">📅</div>
+      <div class="placeholder-icon">
+        <AppIcon name="Calendar" :size="64" stroke-width="1.5" />
+      </div>
       <h2>Calendar View</h2>
       <p>FullCalendar integration will be added here</p>
       <p class="hint">Install: npm install @fullcalendar/vue3 @fullcalendar/core</p>
@@ -57,7 +60,10 @@ const { t } = useI18n()
 }
 
 .placeholder-icon {
-  font-size: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
 }
 
 .calendar-placeholder h2 {

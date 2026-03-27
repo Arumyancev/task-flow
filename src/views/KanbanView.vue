@@ -3,6 +3,7 @@ import { useTasksStore } from '@/stores/tasks'
 import { TaskStatus } from '@/types'
 import { storeToRefs } from 'pinia'
 import TaskCard from '@/components/common/TaskCard.vue'
+import AppIcon from '@/components/common/AppIcon.vue'
 import { useI18n } from 'vue-i18n'
 
 const tasksStore = useTasksStore()
@@ -10,10 +11,10 @@ const { getTasksByStatus } = tasksStore
 const { t } = useI18n()
 
 const columns = [
-  { status: TaskStatus.TODO, title: t('status.todo'), icon: '📝' },
-  { status: TaskStatus.IN_PROGRESS, title: t('status.in_progress'), icon: '🚀' },
-  { status: TaskStatus.REVIEW, title: t('status.review'), icon: '👀' },
-  { status: TaskStatus.DONE, title: t('status.done'), icon: '✅' },
+  { status: TaskStatus.TODO, title: t('status.todo'), icon: 'ListTodo' },
+  { status: TaskStatus.IN_PROGRESS, title: t('status.in_progress'), icon: 'Rocket' },
+  { status: TaskStatus.REVIEW, title: t('status.review'), icon: 'Eye' },
+  { status: TaskStatus.DONE, title: t('status.done'), icon: 'CheckCircle2' },
 ]
 </script>
 
@@ -27,7 +28,9 @@ const columns = [
     <div class="kanban-board">
       <div v-for="column in columns" :key="column.status" class="kanban-column">
         <div class="column-header">
-          <span class="column-icon">{{ column.icon }}</span>
+          <div class="column-icon">
+            <AppIcon :name="column.icon" :size="20" />
+          </div>
           <h3 class="column-title">{{ column.title }}</h3>
           <span class="column-count">{{ getTasksByStatus(column.status).length }}</span>
         </div>
@@ -92,7 +95,9 @@ const columns = [
 }
 
 .column-icon {
-  font-size: var(--font-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .column-title {

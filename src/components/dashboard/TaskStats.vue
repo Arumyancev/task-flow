@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TaskStats } from '@/types'
 import { useI18n } from 'vue-i18n'
+import AppIcon from '@/components/common/AppIcon.vue'
 
 interface Props {
   stats: TaskStats
@@ -14,7 +15,9 @@ const { t } = useI18n()
 <template>
   <div class="stats-grid">
     <div class="stat-card total">
-      <div class="stat-icon">📊</div>
+      <div class="stat-icon">
+        <AppIcon name="BarChart3" :size="32" />
+      </div>
       <div class="stat-content">
         <div class="stat-value">{{ stats.total }}</div>
         <div class="stat-label">{{ t('stats.total') }}</div>
@@ -22,7 +25,9 @@ const { t } = useI18n()
     </div>
 
     <div class="stat-card done">
-      <div class="stat-icon">✅</div>
+      <div class="stat-icon">
+        <AppIcon name="CheckCircle2" :size="32" />
+      </div>
       <div class="stat-content">
         <div class="stat-value">{{ stats.done }}</div>
         <div class="stat-label">{{ t('stats.completed') }}</div>
@@ -30,7 +35,9 @@ const { t } = useI18n()
     </div>
 
     <div class="stat-card in-progress">
-      <div class="stat-icon">🚀</div>
+      <div class="stat-icon">
+        <AppIcon name="Rocket" :size="32" />
+      </div>
       <div class="stat-content">
         <div class="stat-value">{{ stats.inProgress }}</div>
         <div class="stat-label">{{ t('stats.inProgress') }}</div>
@@ -38,7 +45,9 @@ const { t } = useI18n()
     </div>
 
     <div class="stat-card todo">
-      <div class="stat-icon">📝</div>
+      <div class="stat-icon">
+        <AppIcon name="ListTodo" :size="32" />
+      </div>
       <div class="stat-content">
         <div class="stat-value">{{ stats.todo }}</div>
         <div class="stat-label">{{ t('stats.pending') }}</div>
@@ -104,7 +113,10 @@ const { t } = useI18n()
 }
 
 .stat-icon {
-  font-size: var(--font-4xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
 }
 
 .stat-content {
