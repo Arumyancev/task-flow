@@ -1,54 +1,108 @@
-# task-flow
+# Task Flow
 
-This template should help get you started developing with Vue 3 in Vite.
+Modern task management application built with Vue 3, TypeScript, and Vite.
 
-## Recommended IDE Setup
+## ✨ Features
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- 📊 **Dashboard** - Overview with task statistics and widgets
+- 📋 **Kanban Board** - Drag-and-drop task management
+- 📅 **Calendar** - Visual task timeline with FullCalendar
+- 📝 **Task List** - Complete task list with filtering and search
 
-## Recommended Browser Setup
+## 🎨 Themes
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- Light theme
+- Dark theme
+- Easily extensible theme system
 
-## Type Support for `.vue` Imports in TS
+## 🌍 Internationalization
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- English (en)
+- Russian (ru)
+- Chinese (zh)
 
-## Customize configuration
+## 🛠️ Tech Stack
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- **Vue 3** - Progressive JavaScript framework
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Lightning-fast build tool
+- **Pinia** - State management
+- **Vue Router** - Official routing
+- **Vue I18n** - Internationalization
+- **FullCalendar** - Calendar component
+- **Vitest** - Unit testing
+- **@vueuse/core** - Vue composition utilities
 
-## Project Setup
+## 📦 Installation
 
-```sh
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## 🚀 Development
 
-```sh
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-```sh
+## 🧪 Testing
+
+```bash
+# Run tests
+npm run test:unit
+
+# Run tests in watch mode
+npm run test:unit -- --watch
+
+# Run tests with coverage
+npm run test:unit -- --coverage
+```
+
+## 🏗️ Build
+
+```bash
 npm run build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+## 📝 Linting & Formatting
 
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
+```bash
+# Lint code
 npm run lint
+
+# Format code
+npm run format
+
+# Type check
+npm run type-check
 ```
+
+## 📚 Project Structure
+
+```
+src/
+├── assets/         # Static assets
+├── components/     # Reusable components
+├── composables/    # Vue composables
+├── i18n/          # Internationalization
+├── layouts/       # Layout components
+├── router/        # Vue Router configuration
+├── stores/        # Pinia stores
+├── types/         # TypeScript types
+├── utils/         # Utility functions
+└── views/         # Page components
+```
+
+## 📖 Documentation
+
+For detailed documentation and Claude AI context, see [CLAUDE.md](./CLAUDE.md).
+
+## 🤝 Contributing
+
+This is a learning project. Feel free to experiment and add new features!
+
+## 📄 License
+
+MIT
