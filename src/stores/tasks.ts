@@ -89,7 +89,7 @@ export const useTasksStore = defineStore('tasks', () => {
     tasks.value.push(newTask)
   }
 
-  function updateTask(id: string, updates: Partial<Task>) {
+  function updateTask(id: string, updates: Partial<Omit<Task, 'id' | 'createdAt'>>) {
     const index = tasks.value.findIndex((t) => t.id === id)
     if (index !== -1) {
       tasks.value[index] = {

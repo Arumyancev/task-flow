@@ -50,7 +50,9 @@ export const useModalStore = defineStore('modal', () => {
     const index = modals.value.findIndex((m) => m.id === modalId)
     if (index !== -1) {
       const modal = modals.value[index]
-      modal.resolve?.(result)
+      if (modal) {
+        modal.resolve?.(result)
+      }
       modals.value.splice(index, 1)
     }
   }
@@ -66,7 +68,9 @@ export const useModalStore = defineStore('modal', () => {
     const index = modals.value.findIndex((m) => m.id === modalId)
     if (index !== -1) {
       const modal = modals.value[index]
-      modal.reject?.(reason)
+      if (modal) {
+        modal.reject?.(reason)
+      }
       modals.value.splice(index, 1)
     }
   }

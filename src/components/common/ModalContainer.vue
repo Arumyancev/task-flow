@@ -10,7 +10,7 @@ const { modals } = storeToRefs(modalStore)
 function handleEscape(event: KeyboardEvent) {
   if (event.key === 'Escape' && modals.value.length > 0) {
     const lastModal = modals.value[modals.value.length - 1]
-    if (lastModal.options.closable && !lastModal.options.persistent) {
+    if (lastModal && lastModal.options.closable && !lastModal.options.persistent) {
       modalStore.dismiss(lastModal.id, 'escape')
     }
   }
