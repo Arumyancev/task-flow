@@ -1,16 +1,19 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useTasksStore } from '@/stores/tasks'
 import { TaskStatus } from '@/types'
 import type { Task } from '@/types'
 import { storeToRefs } from 'pinia'
 import TaskCard from '@/components/common/TaskCard.vue'
 import TaskFormModal from '@/components/tasks/TaskFormModal.vue'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import AppIcon from '@/components/common/AppIcon.vue'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/useModal'
+import draggable from 'vuedraggable'
 
 const tasksStore = useTasksStore()
-const { getTasksByStatus } = tasksStore
+const { tasks } = storeToRefs(tasksStore)
 const { t } = useI18n()
 const modal = useModal()
 
@@ -20,6 +23,22 @@ const columns = [
   { status: TaskStatus.REVIEW, title: t('status.review'), icon: 'Eye' },
   { status: TaskStatus.DONE, title: t('status.done'), icon: 'CheckCircle2' },
 ]
+
+// Создаём computed для каждой колонки чтобы иметь реактивные списки
+const columnTasks = computed(() => ({
+  [TaskStatus.TODO]: tasks.value.filter((t) => t.status === TaskStatus.TODO),
+  [TaskStatus.IN_PROGRESS]: tasks.value.filter((t) => t.status === TaskStatus.IN_PROGRESS),
+  [TaskStatus.REVIEW]: tasks.value.filter((t) => t.status === TaskStatus.REVIEW),
+  [TaskStatus.DONE]: tasks.value.filter((t) => t.status === TaskStatus.DONE),
+}))
+
+// Обработчик изменения статуса при drag & drop
+function handleDragChange(status: TaskStatus, evt: any) {
+  if (evt.added) {
+    const task = evt.added.element as Task
+    tasksStore.updateTaskStatus(task.id, status)
+  }
+}
 
 async function openAddTaskModal(defaultStatus?: TaskStatus) {
   try {
@@ -46,6 +65,26 @@ async function openEditTaskModal(task: Task) {
     // Modal dismissed
   }
 }
+
+async function handleDeleteTask(task: Task) {
+  try {
+    const confirmed = await modal.open<boolean>(
+      ConfirmDialog,
+      {
+        message: t('task.deleteConfirm'),
+        title: t('task.deleteTask'),
+        confirmText: t('common.delete'),
+        danger: true,
+      },
+      { size: 'sm' },
+    )
+    if (confirmed) {
+      tasksStore.deleteTask(task.id)
+    }
+  } catch (error) {
+    // Modal dismissed
+  }
+}
 </script>
 
 <template>
@@ -68,15 +107,24 @@ async function openEditTaskModal(task: Task) {
             <AppIcon :name="column.icon" :size="20" />
           </div>
           <h3 class="column-title">{{ column.title }}</h3>
-          <span class="column-count">{{ getTasksByStatus(column.status).length }}</span>
+          <span class="column-count">{{ columnTasks[column.status].length }}</span>
         </div>
         <div class="column-content">
-          <TaskCard
-            v-for="task in getTasksByStatus(column.status)"
-            :key="task.id"
-            :task="task"
-            @click="openEditTaskModal(task)"
-          />
+          <draggable
+            :list="columnTasks[column.status]"
+            :group="{ name: 'tasks', pull: true, put: true }"
+            class="drag-area"
+            item-key="id"
+            @change="(evt: any) => handleDragChange(column.status, evt)"
+          >
+            <template #item="{ element: task }">
+              <TaskCard
+                :task="task"
+                @click="openEditTaskModal(task)"
+                @delete="handleDeleteTask(task)"
+              />
+            </template>
+          </draggable>
           <button class="add-task-btn" @click="openAddTaskModal(column.status)">
             <AppIcon name="Plus" :size="16" />
             {{ t('task.addTask') }}
@@ -233,5 +281,26 @@ async function openEditTaskModal(task: Task) {
   background-color: var(--color-background-soft);
   border-color: var(--color-primary);
   color: var(--color-primary);
+}
+
+.drag-area {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  min-height: 50px;
+  flex: 1;
+}
+
+/* Стили для drag & drop */
+.drag-area :deep(.sortable-ghost) {
+  opacity: 0.4;
+}
+
+.drag-area :deep(.sortable-drag) {
+  cursor: move;
+}
+
+.drag-area :deep(.sortable-chosen) {
+  cursor: move;
 }
 </style>

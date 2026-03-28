@@ -5,6 +5,7 @@ import AppCard from '@/components/common/AppCard.vue'
 import TaskStats from '@/components/dashboard/TaskStats.vue'
 import TaskCard from '@/components/common/TaskCard.vue'
 import TaskFormModal from '@/components/tasks/TaskFormModal.vue'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import AppIcon from '@/components/common/AppIcon.vue'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/useModal'
@@ -43,6 +44,26 @@ async function openEditTaskModal(task: Task) {
     console.log('Modal dismissed:', error)
   }
 }
+
+async function handleDeleteTask(task: Task) {
+  try {
+    const confirmed = await modal.open<boolean>(
+      ConfirmDialog,
+      {
+        message: t('task.deleteConfirm'),
+        title: t('task.deleteTask'),
+        confirmText: t('common.delete'),
+        danger: true,
+      },
+      { size: 'sm' },
+    )
+    if (confirmed) {
+      tasksStore.deleteTask(task.id)
+    }
+  } catch (error) {
+    // Modal dismissed
+  }
+}
 </script>
 
 <template>
@@ -50,6 +71,7 @@ async function openEditTaskModal(task: Task) {
     <div class="dashboard-header">
       <div>
         <h1>{{ t('nav.dashboard') }}</h1>
+        <p class="subtitle">{{ t('common.appName') }}</p>
       </div>
       <button class="btn-add" @click="openAddTaskModal">
         <AppIcon name="Plus" :size="20" />
@@ -58,8 +80,23 @@ async function openEditTaskModal(task: Task) {
     </div>
 
     <div class="dashboard-content">
-      <AppCard :title="t('stats.total')">
+      <AppCard :title="t('stats.total')" icon="📋">
         <TaskStats :stats="stats" />
+      </AppCard>
+
+      <AppCard :title="t('task.title')" icon="📝" class="recent-tasks">
+        <div v-if="recentTasks.length === 0" class="empty-state">
+          {{ t('common.noData') }}
+        </div>
+        <div v-else class="tasks-list">
+          <TaskCard
+            v-for="task in recentTasks"
+            :key="task.id"
+            :task="task"
+            @click="openEditTaskModal(task)"
+            @delete="handleDeleteTask(task)"
+          />
+        </div>
       </AppCard>
     </div>
   </div>

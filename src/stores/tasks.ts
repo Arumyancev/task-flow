@@ -1,10 +1,33 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { Task, TaskStatus, TaskStats } from '@/types'
 import { TaskStatus as TaskStatusEnum, TaskPriority } from '@/types'
 
-export const useTasksStore = defineStore('tasks', () => {
-  const tasks = ref<Task[]>([
+const STORAGE_KEY = 'task-flow-tasks'
+
+// Загрузка задач из localStorage
+function loadTasksFromStorage(): Task[] {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      // Преобразуем строки дат обратно в Date объекты
+      return parsed.map((task: any) => ({
+        ...task,
+        createdAt: new Date(task.createdAt),
+        updatedAt: new Date(task.updatedAt),
+        dueDate: task.dueDate ? new Date(task.dueDate) : undefined,
+      }))
+    }
+  } catch (error) {
+    console.error('Failed to load tasks from localStorage:', error)
+  }
+  return getDefaultTasks()
+}
+
+// Дефолтные задачи
+function getDefaultTasks(): Task[] {
+  return [
     {
       id: '1',
       title: 'Design new landing page',
@@ -69,7 +92,24 @@ export const useTasksStore = defineStore('tasks', () => {
       updatedAt: new Date('2024-01-18'),
       tags: ['backend', 'performance'],
     },
-  ])
+  ]
+}
+
+export const useTasksStore = defineStore('tasks', () => {
+  const tasks = ref<Task[]>(loadTasksFromStorage())
+
+  // Сохранение в localStorage при изменении
+  watch(
+    tasks,
+    (newTasks) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newTasks))
+      } catch (error) {
+        console.error('Failed to save tasks to localStorage:', error)
+      }
+    },
+    { deep: true },
+  )
 
   const stats = computed<TaskStats>(() => ({
     total: tasks.value.length,
@@ -107,6 +147,14 @@ export const useTasksStore = defineStore('tasks', () => {
     }
   }
 
+  function clearAllTasks() {
+    tasks.value = []
+  }
+
+  function resetToDefaults() {
+    tasks.value = getDefaultTasks()
+  }
+
   function updateTaskStatus(id: string, status: TaskStatus) {
     updateTask(id, { status })
   }
@@ -123,5 +171,7 @@ export const useTasksStore = defineStore('tasks', () => {
     deleteTask,
     updateTaskStatus,
     getTasksByStatus,
+    clearAllTasks,
+    resetToDefaults,
   }
 })

@@ -2,6 +2,7 @@
 import type { Task } from '@/types'
 import { TaskPriority, TaskStatus } from '@/types'
 import { useI18n } from 'vue-i18n'
+import AppIcon from '@/components/common/AppIcon.vue'
 
 interface Props {
   task: Task
@@ -11,6 +12,7 @@ defineProps<Props>()
 
 const emit = defineEmits<{
   click: [task: Task]
+  delete: [task: Task]
   statusChange: [task: Task, status: TaskStatus]
 }>()
 
@@ -33,11 +35,20 @@ function formatDate(date?: Date) {
   <div class="task-card" @click="emit('click', task)">
     <div class="task-header">
       <h4 class="task-title">{{ task.title }}</h4>
-      <span
-        class="task-priority"
-        :style="{ backgroundColor: priorityColors[task.priority] }"
-        :title="t(`priority.${task.priority}`)"
-      ></span>
+      <div class="task-actions">
+        <span
+          class="task-priority"
+          :style="{ backgroundColor: priorityColors[task.priority] }"
+          :title="t(`priority.${task.priority}`)"
+        ></span>
+        <button
+          class="delete-btn"
+          @click.stop="emit('delete', task)"
+          :title="t('task.deleteTask')"
+        >
+          <AppIcon name="Trash2" :size="16" />
+        </button>
+      </div>
     </div>
     <p v-if="task.description" class="task-description">{{ task.description }}</p>
     <div class="task-footer">
@@ -59,6 +70,7 @@ function formatDate(date?: Date) {
   padding: var(--spacing-md);
   cursor: pointer;
   transition: all var(--transition-fast);
+  user-select: none;
 }
 
 .task-card:hover {
@@ -83,12 +95,39 @@ function formatDate(date?: Date) {
   flex: 1;
 }
 
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
 .task-priority {
   width: 12px;
   height: 12px;
   border-radius: 50%;
   flex-shrink: 0;
-  margin-top: 4px;
+}
+
+.delete-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.delete-btn:hover {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.task-card:hover .delete-btn {
+  display: flex;
 }
 
 .task-description {

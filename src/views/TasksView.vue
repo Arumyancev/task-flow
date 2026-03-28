@@ -4,6 +4,7 @@ import { useTasksStore } from '@/stores/tasks'
 import { storeToRefs } from 'pinia'
 import TaskCard from '@/components/common/TaskCard.vue'
 import TaskFormModal from '@/components/tasks/TaskFormModal.vue'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import AppIcon from '@/components/common/AppIcon.vue'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/useModal'
@@ -51,6 +52,26 @@ async function openEditTaskModal(task: Task) {
       { title: t('task.editTask') },
     )
     tasksStore.updateTask(task.id, result)
+  } catch (error) {
+    // Modal dismissed
+  }
+}
+
+async function handleDeleteTask(task: Task) {
+  try {
+    const confirmed = await modal.open<boolean>(
+      ConfirmDialog,
+      {
+        message: t('task.deleteConfirm'),
+        title: t('task.deleteTask'),
+        confirmText: t('common.delete'),
+        danger: true,
+      },
+      { size: 'sm' },
+    )
+    if (confirmed) {
+      tasksStore.deleteTask(task.id)
+    }
   } catch (error) {
     // Modal dismissed
   }
@@ -107,6 +128,7 @@ async function openEditTaskModal(task: Task) {
         :key="task.id"
         :task="task"
         @click="openEditTaskModal(task)"
+        @delete="handleDeleteTask(task)"
       />
       <div v-if="filteredTasks.length === 0" class="empty-state">
         <div class="empty-icon">
@@ -167,6 +189,15 @@ async function openEditTaskModal(task: Task) {
   color: var(--color-text);
   font-size: var(--font-md);
   transition: all var(--transition-fast);
+}
+
+.filter-select {
+  padding-right: var(--spacing-xl);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-sm) center;
+  appearance: none;
+  cursor: pointer;
 }
 
 .search-input:focus,
