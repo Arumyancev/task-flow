@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { useTasksStore } from '@/stores/tasks'
 import { TaskStatus } from '@/types'
+import type { Task } from '@/types'
 import { storeToRefs } from 'pinia'
 import TaskCard from '@/components/common/TaskCard.vue'
+import TaskFormModal from '@/components/tasks/TaskFormModal.vue'
 import AppIcon from '@/components/common/AppIcon.vue'
 import { useI18n } from 'vue-i18n'
+import { useModal } from '@/composables/useModal'
 
 const tasksStore = useTasksStore()
 const { getTasksByStatus } = tasksStore
 const { t } = useI18n()
+const modal = useModal()
 
 const columns = [
   { status: TaskStatus.TODO, title: t('status.todo'), icon: 'ListTodo' },
@@ -16,12 +20,45 @@ const columns = [
   { status: TaskStatus.REVIEW, title: t('status.review'), icon: 'Eye' },
   { status: TaskStatus.DONE, title: t('status.done'), icon: 'CheckCircle2' },
 ]
+
+async function openAddTaskModal(defaultStatus?: TaskStatus) {
+  try {
+    const result = await modal.open<Task>(
+      TaskFormModal,
+      defaultStatus ? { task: { status: defaultStatus } as Partial<Task> } : {},
+      { title: t('task.addTask'), size: 'md' },
+    )
+    tasksStore.addTask(result)
+  } catch (error) {
+    // Modal dismissed
+  }
+}
+
+async function openEditTaskModal(task: Task) {
+  try {
+    const result = await modal.open<Task>(
+      TaskFormModal,
+      { task },
+      { title: t('task.editTask'), size: 'md' },
+    )
+    tasksStore.updateTask(task.id, result)
+  } catch (error) {
+    // Modal dismissed
+  }
+}
 </script>
 
 <template>
   <div class="kanban">
     <div class="kanban-header">
-      <h1>{{ t('nav.kanban') }}</h1>
+      <div>
+        <h1>{{ t('nav.kanban') }}</h1>
+        <p class="subtitle">Drag & Drop Task Management</p>
+      </div>
+      <button class="btn-add" @click="openAddTaskModal()">
+        <AppIcon name="Plus" :size="20" />
+        {{ t('task.addTask') }}
+      </button>
     </div>
 
     <div class="kanban-board">
@@ -38,10 +75,12 @@ const columns = [
             v-for="task in getTasksByStatus(column.status)"
             :key="task.id"
             :task="task"
+            @click="openEditTaskModal(task)"
           />
-          <div v-if="getTasksByStatus(column.status).length === 0" class="empty-column">
-            {{ t('common.noData') }}
-          </div>
+          <button class="add-task-btn" @click="openAddTaskModal(column.status)">
+            <AppIcon name="Plus" :size="16" />
+            {{ t('task.addTask') }}
+          </button>
         </div>
       </div>
     </div>
@@ -127,5 +166,72 @@ const columns = [
   padding: var(--spacing-xl);
   color: var(--color-text-muted);
   font-size: var(--font-sm);
+}
+
+.kanban-header {
+  margin-bottom: var(--spacing-2xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.kanban-header h1 {
+  font-size: var(--font-4xl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.subtitle {
+  font-size: var(--font-lg);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.btn-add {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-md);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-add:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.add-task-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  width: 100%;
+  padding: var(--spacing-sm);
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.add-task-btn:hover {
+  background-color: var(--color-background-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 </style>

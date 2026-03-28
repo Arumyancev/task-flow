@@ -3,13 +3,17 @@ import { ref, computed } from 'vue'
 import { useTasksStore } from '@/stores/tasks'
 import { storeToRefs } from 'pinia'
 import TaskCard from '@/components/common/TaskCard.vue'
+import TaskFormModal from '@/components/tasks/TaskFormModal.vue'
 import AppIcon from '@/components/common/AppIcon.vue'
 import { useI18n } from 'vue-i18n'
+import { useModal } from '@/composables/useModal'
 import { TaskStatus, TaskPriority } from '@/types'
+import type { Task } from '@/types'
 
 const tasksStore = useTasksStore()
 const { tasks } = storeToRefs(tasksStore)
 const { t } = useI18n()
+const modal = useModal()
 
 const searchQuery = ref('')
 const selectedStatus = ref<TaskStatus | 'all'>('all')
@@ -29,13 +33,41 @@ const filteredTasks = computed(() => {
     return matchesSearch && matchesStatus && matchesPriority
   })
 })
+
+async function openAddTaskModal() {
+  try {
+    const result = await modal.open<Task>(TaskFormModal, {}, { title: t('task.addTask') })
+    tasksStore.addTask(result)
+  } catch (error) {
+    // Modal dismissed
+  }
+}
+
+async function openEditTaskModal(task: Task) {
+  try {
+    const result = await modal.open<Task>(
+      TaskFormModal,
+      { task },
+      { title: t('task.editTask') },
+    )
+    tasksStore.updateTask(task.id, result)
+  } catch (error) {
+    // Modal dismissed
+  }
+}
 </script>
 
 <template>
   <div class="tasks">
     <div class="tasks-header">
-      <h1>{{ t('nav.tasks') }}</h1>
-      <p class="subtitle">All Tasks - {{ filteredTasks.length }} of {{ tasks.length }}</p>
+      <div>
+        <h1>{{ t('nav.tasks') }}</h1>
+        <p class="subtitle">All Tasks - {{ filteredTasks.length }} of {{ tasks.length }}</p>
+      </div>
+      <button class="btn-add" @click="openAddTaskModal">
+        <AppIcon name="Plus" :size="20" />
+        {{ t('task.addTask') }}
+      </button>
     </div>
 
     <div class="filters">
@@ -70,7 +102,12 @@ const filteredTasks = computed(() => {
     </div>
 
     <div class="tasks-list">
-      <TaskCard v-for="task in filteredTasks" :key="task.id" :task="task" />
+      <TaskCard
+        v-for="task in filteredTasks"
+        :key="task.id"
+        :task="task"
+        @click="openEditTaskModal(task)"
+      />
       <div v-if="filteredTasks.length === 0" class="empty-state">
         <div class="empty-icon">
           <AppIcon name="Search" :size="64" stroke-width="1.5" />
@@ -88,6 +125,11 @@ const filteredTasks = computed(() => {
 
 .tasks-header {
   margin-bottom: var(--spacing-2xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
 }
 
 .tasks-header h1 {
@@ -162,5 +204,27 @@ const filteredTasks = computed(() => {
 .empty-state p {
   margin: 0;
   font-size: var(--font-lg);
+}
+
+.btn-add {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-md);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-add:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 </style>

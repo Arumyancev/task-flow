@@ -3,16 +3,24 @@ import { ref } from 'vue'
 import type { Task } from '@/types'
 import { TaskStatus, TaskPriority } from '@/types'
 import { useI18n } from 'vue-i18n'
+import AppIcon from '@/components/common/AppIcon.vue'
 
 interface Props {
   task?: Task
   modalId: string
 }
 
+// Тип для результата - либо полная задача (при редактировании), либо данные для создания
+type TaskFormResult = Omit<Task, 'id' | 'createdAt' | 'updatedAt'> & {
+  id?: string
+  createdAt?: Date
+  updatedAt?: Date
+}
+
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  close: [result: Task]
+  close: [result: TaskFormResult]
   dismiss: [reason?: string]
 }>()
 
@@ -132,9 +140,11 @@ function handleCancel() {
     <!-- Actions -->
     <div class="form-actions">
       <button type="button" class="btn btn-secondary" @click="handleCancel">
+        <AppIcon name="X" :size="18" />
         {{ t('common.cancel') }}
       </button>
       <button type="submit" class="btn btn-primary">
+        <AppIcon :name="task ? 'Save' : 'Plus'" :size="18" />
         {{ task ? t('common.save') : t('common.create') }}
       </button>
     </div>
@@ -206,6 +216,9 @@ function handleCancel() {
 }
 
 .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-lg);
   border: none;
   border-radius: var(--radius-md);

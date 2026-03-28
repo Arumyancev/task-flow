@@ -58,7 +58,7 @@ async function openEditTaskModal(task: Task) {
     </div>
 
     <div class="dashboard-content">
-      <AppCard :title="t('stats.total')" icon="📊">
+      <AppCard :title="t('stats.total')">
         <TaskStats :stats="stats" />
       </AppCard>
     </div>

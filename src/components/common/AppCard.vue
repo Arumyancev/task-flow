@@ -15,7 +15,6 @@ withDefaults(defineProps<Props>(), {
 <template>
   <div class="card">
     <div v-if="title || icon" class="card-header">
-      <span v-if="icon" class="card-icon">{{ icon }}</span>
       <h3 v-if="title" class="card-title">{{ title }}</h3>
     </div>
     <div class="card-content">
