@@ -13,6 +13,7 @@ export default {
     today: 'Сегодня',
     month: 'Месяц',
     week: 'Неделя',
+    day: 'День',
     taskCalendar: 'Календарь задач',
   },
   nav: {

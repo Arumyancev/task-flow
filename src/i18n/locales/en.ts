@@ -13,6 +13,7 @@ export default {
     today: 'Today',
     month: 'Month',
     week: 'Week',
+    day: 'Day',
     taskCalendar: 'Task Timeline',
   },
   nav: {

@@ -27,7 +27,10 @@ const priorityColors = {
 
 function formatDate(date?: Date) {
   if (!date) return ''
-  return new Date(date).toLocaleDateString()
+  const d = new Date(date)
+  const dateStr = d.toLocaleDateString()
+  const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  return `${dateStr} ${timeStr}`
 }
 </script>
 
@@ -79,7 +82,6 @@ function formatDate(date?: Date) {
 .task-card:hover {
   border-color: var(--color-primary);
   box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
 }
 
 .task-header {

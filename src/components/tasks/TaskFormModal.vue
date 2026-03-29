@@ -37,7 +37,14 @@ const form = ref({
 })
 
 function formatDateForInput(date: Date): string {
-  return new Date(date).toISOString().split('T')[0]
+  // Формат datetime-local: YYYY-MM-DDTHH:mm
+  const d = new Date(date)
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  const hours = String(d.getHours()).padStart(2, '0')
+  const minutes = String(d.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day}T${hours}:${minutes}`
 }
 
 function handleSubmit() {
@@ -122,7 +129,7 @@ function handleCancel() {
     <div class="form-row">
       <div class="form-group">
         <label for="dueDate" class="form-label">{{ t('task.dueDate') }}</label>
-        <input id="dueDate" v-model="form.dueDate" type="date" class="form-input" />
+        <input id="dueDate" v-model="form.dueDate" type="datetime-local" class="form-input" />
       </div>
 
       <div class="form-group">

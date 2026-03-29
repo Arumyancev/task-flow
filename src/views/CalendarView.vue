@@ -6,6 +6,7 @@ import { useModal } from '@/composables/useModal'
 import { storeToRefs } from 'pinia'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import type { CalendarOptions, EventClickArg, DateClickArg } from '@fullcalendar/core'
 import type { Task } from '@/types'
@@ -27,7 +28,7 @@ const calendarEvents = computed(() => {
       id: task.id,
       title: `#${task.id} ${task.title}`,
       start: task.dueDate,
-      allDay: true,
+      allDay: false, // Показываем время
       backgroundColor: getPriorityColor(task.priority),
       borderColor: getPriorityColor(task.priority),
       extendedProps: {
@@ -49,12 +50,12 @@ function getPriorityColor(priority: TaskPriority): string {
 
 // Конфигурация календаря
 const calendarOptions = computed<CalendarOptions>(() => ({
-  plugins: [dayGridPlugin, interactionPlugin],
-  initialView: 'dayGridMonth',
+  plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+  initialView: 'timeGridWeek',
   headerToolbar: {
     left: 'prev,next today',
     center: 'title',
-    right: 'dayGridMonth,dayGridWeek',
+    right: 'dayGridMonth,timeGridWeek,timeGridDay',
   },
   events: calendarEvents.value,
   editable: false,
@@ -70,7 +71,12 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     today: t('common.today') || 'Today',
     month: t('common.month') || 'Month',
     week: t('common.week') || 'Week',
+    day: t('common.day') || 'Day',
   },
+  slotMinTime: '06:00:00',
+  slotMaxTime: '22:00:00',
+  scrollTime: '09:00:00',
+  nowIndicator: true,
 }))
 
 // Клик по событию (задаче)
