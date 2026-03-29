@@ -34,7 +34,10 @@ function formatDate(date?: Date) {
 <template>
   <div class="task-card" @click="emit('click', task)">
     <div class="task-header">
-      <h4 class="task-title">{{ task.title }}</h4>
+      <div class="task-title-wrapper">
+        <span class="task-id">#{{ task.id }}</span>
+        <h4 class="task-title">{{ task.title }}</h4>
+      </div>
       <div class="task-actions">
         <span
           class="task-priority"
@@ -87,12 +90,26 @@ function formatDate(date?: Date) {
   margin-bottom: var(--spacing-sm);
 }
 
+.task-title-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.task-id {
+  font-size: var(--font-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .task-title {
   font-size: var(--font-md);
   font-weight: 600;
   color: var(--color-text);
   margin: 0;
-  flex: 1;
 }
 
 .task-actions {

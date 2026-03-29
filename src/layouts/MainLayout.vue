@@ -172,7 +172,6 @@ const route = useRoute()
 
 .main {
   flex: 1 1 auto;
-  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
   padding: var(--spacing-xl) var(--spacing-lg);

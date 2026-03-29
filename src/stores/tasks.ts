@@ -95,6 +95,19 @@ function getDefaultTasks(): Task[] {
   ]
 }
 
+// Функция для получения следующего ID
+function getNextId(tasks: Task[]): string {
+  if (tasks.length === 0) return '1'
+  
+  // Находим максимальный числовой ID
+  const maxId = tasks.reduce((max, task) => {
+    const numId = parseInt(task.id)
+    return !isNaN(numId) && numId > max ? numId : max
+  }, 0)
+  
+  return String(maxId + 1)
+}
+
 export const useTasksStore = defineStore('tasks', () => {
   const tasks = ref<Task[]>(loadTasksFromStorage())
 
@@ -122,7 +135,7 @@ export const useTasksStore = defineStore('tasks', () => {
   function addTask(task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) {
     const newTask: Task = {
       ...task,
-      id: Date.now().toString(),
+      id: getNextId(tasks.value),
       createdAt: new Date(),
       updatedAt: new Date(),
     }

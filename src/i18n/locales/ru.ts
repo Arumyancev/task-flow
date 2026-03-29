@@ -10,6 +10,10 @@ export default {
     filter: 'Фильтр',
     loading: 'Загрузка...',
     noData: 'Нет данных',
+    today: 'Сегодня',
+    month: 'Месяц',
+    week: 'Неделя',
+    taskCalendar: 'Календарь задач',
   },
   nav: {
     dashboard: 'Главная',

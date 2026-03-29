@@ -70,14 +70,9 @@ src/
 
 ## Следующие шаги
 
-1. Установить FullCalendar для Calendar View:
-```bash
-npm install @fullcalendar/vue3 @fullcalendar/core @fullcalendar/daygrid
-```
-
-2. Добавить drag & drop для Kanban
-
-3. Добавить больше тестов
+1. Добавить больше тестов
+2. Добавить фильтры в календарь
+3. Добавить экспорт/импорт задач
 
 ## Документация
 

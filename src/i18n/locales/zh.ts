@@ -10,6 +10,10 @@ export default {
     filter: 'Filter',
     loading: 'Loading...',
     noData: 'No data available',
+    today: 'Today',
+    month: 'Month',
+    week: 'Week',
+    taskCalendar: 'Task Timeline',
   },
   nav: {
     dashboard: 'Dashboard',
