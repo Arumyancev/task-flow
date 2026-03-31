@@ -128,7 +128,7 @@ function formatDate(date?: Date) {
 }
 
 .delete-btn {
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--spacing-xs);
@@ -138,6 +138,8 @@ function formatDate(date?: Date) {
   color: var(--color-text-muted);
   cursor: pointer;
   transition: all var(--transition-fast);
+  opacity: 0;
+  visibility: hidden;
 }
 
 .delete-btn:hover {
@@ -146,7 +148,8 @@ function formatDate(date?: Date) {
 }
 
 .task-card:hover .delete-btn {
-  display: flex;
+  opacity: 1;
+  visibility: visible;
 }
 
 .task-description {

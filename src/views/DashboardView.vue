@@ -3,21 +3,17 @@ import { useTasksStore } from '@/stores/tasks'
 import { storeToRefs } from 'pinia'
 import AppCard from '@/components/common/AppCard.vue'
 import TaskStats from '@/components/dashboard/TaskStats.vue'
-import TaskCard from '@/components/common/TaskCard.vue'
+import DateTimeWidget from '@/components/dashboard/DateTimeWidget.vue'
 import TaskFormModal from '@/components/tasks/TaskFormModal.vue'
-import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import AppIcon from '@/components/common/AppIcon.vue'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/useModal'
 import type { Task } from '@/types'
 
 const tasksStore = useTasksStore()
-const { stats, tasks } = storeToRefs(tasksStore)
+const { stats } = storeToRefs(tasksStore)
 const { t } = useI18n()
 const modal = useModal()
-
-// Получаем последние задачи
-const recentTasks = tasks.value.slice(0, 3)
 
 // Открыть модалку добавления задачи
 async function openAddTaskModal() {
@@ -26,42 +22,6 @@ async function openAddTaskModal() {
     tasksStore.addTask(result)
   } catch (error) {
     // Modal was dismissed
-    console.log('Modal dismissed:', error)
-  }
-}
-
-// Открыть модалку редактирования задачи
-async function openEditTaskModal(task: Task) {
-  try {
-    const result = await modal.open<Task>(
-      TaskFormModal,
-      { task },
-      { title: t('task.editTask') },
-    )
-    tasksStore.updateTask(task.id, result)
-  } catch (error) {
-    // Modal was dismissed
-    console.log('Modal dismissed:', error)
-  }
-}
-
-async function handleDeleteTask(task: Task) {
-  try {
-    const confirmed = await modal.open<boolean>(
-      ConfirmDialog,
-      {
-        message: t('task.deleteConfirm'),
-        title: t('task.deleteTask'),
-        confirmText: t('common.delete'),
-        danger: true,
-      },
-      { size: 'sm' },
-    )
-    if (confirmed) {
-      tasksStore.deleteTask(task.id)
-    }
-  } catch (error) {
-    // Modal dismissed
   }
 }
 </script>
@@ -80,24 +40,15 @@ async function handleDeleteTask(task: Task) {
     </div>
 
     <div class="dashboard-content">
-      <AppCard :title="t('stats.total')" icon="📋">
-        <TaskStats :stats="stats" />
-      </AppCard>
+      <div class="widgets-grid">
+        <AppCard class="datetime-card">
+          <DateTimeWidget />
+        </AppCard>
 
-      <AppCard :title="t('task.title')" icon="📝" class="recent-tasks">
-        <div v-if="recentTasks.length === 0" class="empty-state">
-          {{ t('common.noData') }}
-        </div>
-        <div v-else class="tasks-list">
-          <TaskCard
-            v-for="task in recentTasks"
-            :key="task.id"
-            :task="task"
-            @click="openEditTaskModal(task)"
-            @delete="handleDeleteTask(task)"
-          />
-        </div>
-      </AppCard>
+        <AppCard :title="t('stats.total')" icon="📋">
+          <TaskStats :stats="stats" />
+        </AppCard>
+      </div>
     </div>
   </div>
 </template>
@@ -135,16 +86,22 @@ async function handleDeleteTask(task: Task) {
   gap: var(--spacing-xl);
 }
 
-.tasks-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+.widgets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-xl);
 }
 
-.empty-state {
-  text-align: center;
-  padding: var(--spacing-2xl);
-  color: var(--color-text-muted);
+.datetime-card {
+  grid-column: span 1;
+}
+
+.datetime-card :deep(.card-content) {
+  padding: 0 !important;
+}
+
+.datetime-card :deep(.card-header) {
+  display: none;
 }
 
 .btn-add {
@@ -169,5 +126,9 @@ async function handleDeleteTask(task: Task) {
   box-shadow: var(--shadow-md);
 }
 
-
+@media (max-width: 768px) {
+  .widgets-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
