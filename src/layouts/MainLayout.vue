@@ -23,13 +23,7 @@ const route = useRoute()
           <RouterLink to="/" :class="{ active: route.name === 'dashboard' }">
             {{ t('nav.dashboard') }}
           </RouterLink>
-          <RouterLink to="/kanban" :class="{ active: route.name === 'kanban' }">
-            {{ t('nav.kanban') }}
-          </RouterLink>
-          <RouterLink to="/calendar" :class="{ active: route.name === 'calendar' }">
-            {{ t('nav.calendar') }}
-          </RouterLink>
-          <RouterLink to="/tasks" :class="{ active: route.name === 'tasks' }">
+          <RouterLink to="/tasks" :class="{ active: route.path.startsWith('/tasks') }">
             {{ t('nav.tasks') }}
           </RouterLink>
         </nav>
