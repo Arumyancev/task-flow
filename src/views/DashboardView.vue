@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import AppCard from '@/components/common/AppCard.vue'
 import TaskStats from '@/components/dashboard/TaskStats.vue'
 import DateTimeWidget from '@/components/dashboard/DateTimeWidget.vue'
+import WeatherWidget from '@/components/dashboard/WeatherWidget.vue'
 import TaskFormModal from '@/components/tasks/TaskFormModal.vue'
 import AppIcon from '@/components/common/AppIcon.vue'
 import { useI18n } from 'vue-i18n'
@@ -45,7 +46,11 @@ async function openAddTaskModal() {
           <DateTimeWidget />
         </AppCard>
 
-        <AppCard :title="t('stats.total')" icon="📋">
+        <AppCard :title="t('common.weather') || 'Weather'" class="weather-card">
+          <WeatherWidget />
+        </AppCard>
+
+        <AppCard :title="t('stats.total')" icon="📋" class="stats-card">
           <TaskStats :stats="stats" />
         </AppCard>
       </div>
@@ -88,11 +93,19 @@ async function openAddTaskModal() {
 
 .widgets-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-xl);
 }
 
 .datetime-card {
+  grid-column: span 1;
+}
+
+.weather-card {
+  grid-column: span 1;
+}
+
+.stats-card {
   grid-column: span 1;
 }
 
@@ -102,6 +115,10 @@ async function openAddTaskModal() {
 
 .datetime-card :deep(.card-header) {
   display: none;
+}
+
+.weather-card :deep(.card-content) {
+  padding: 0 !important;
 }
 
 .btn-add {
@@ -126,9 +143,25 @@ async function openAddTaskModal() {
   box-shadow: var(--shadow-md);
 }
 
+@media (max-width: 1200px) {
+  .widgets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats-card {
+    grid-column: span 2;
+  }
+}
+
 @media (max-width: 768px) {
   .widgets-grid {
     grid-template-columns: 1fr;
+  }
+
+  .datetime-card,
+  .weather-card,
+  .stats-card {
+    grid-column: span 1;
   }
 }
 </style>

@@ -15,6 +15,7 @@ export default {
     week: 'Week',
     day: 'Day',
     taskCalendar: 'Task Timeline',
+    weather: 'Weather',
   },
   nav: {
     dashboard: 'Dashboard',

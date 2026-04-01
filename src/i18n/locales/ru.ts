@@ -15,6 +15,7 @@ export default {
     week: 'Неделя',
     day: 'День',
     taskCalendar: 'Календарь задач',
+    weather: 'Погода',
   },
   nav: {
     dashboard: 'Главная',
