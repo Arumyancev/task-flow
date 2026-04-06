@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { Task } from '@/types'
 import { TaskStatus, TaskPriority } from '@/types'
 import { useI18n } from 'vue-i18n'
 import AppIcon from '@/components/common/AppIcon.vue'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import { useModal } from '@/composables/useModal'
 
 interface Props {
   task?: Task
@@ -25,6 +27,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const modal = useModal()
 
 // Form data
 const form = ref({
@@ -34,6 +37,28 @@ const form = ref({
   priority: props.task?.priority || TaskPriority.MEDIUM,
   dueDate: props.task?.dueDate ? formatDateForInput(props.task.dueDate) : '',
   tags: props.task?.tags?.join(', ') || '',
+})
+
+// Сохраняем исходное состояние для сравнения
+const initialForm = {
+  title: props.task?.title || '',
+  description: props.task?.description || '',
+  status: props.task?.status || TaskStatus.TODO,
+  priority: props.task?.priority || TaskPriority.MEDIUM,
+  dueDate: props.task?.dueDate ? formatDateForInput(props.task.dueDate) : '',
+  tags: props.task?.tags?.join(', ') || '',
+}
+
+// Проверка на изменения в форме (dirty data)
+const isDirty = computed(() => {
+  return (
+    form.value.title !== initialForm.title ||
+    form.value.description !== initialForm.description ||
+    form.value.status !== initialForm.status ||
+    form.value.priority !== initialForm.priority ||
+    form.value.dueDate !== initialForm.dueDate ||
+    form.value.tags !== initialForm.tags
+  )
 })
 
 function formatDateForInput(date: Date): string {
@@ -48,8 +73,8 @@ function formatDateForInput(date: Date): string {
 }
 
 function handleSubmit() {
-  const result: Task = {
-    id: props.task?.id || Date.now().toString(),
+  const result: TaskFormResult = {
+    id: props.task?.id,
     title: form.value.title,
     description: form.value.description,
     status: form.value.status,
@@ -61,15 +86,39 @@ function handleSubmit() {
           .map((t) => t.trim())
           .filter(Boolean)
       : [],
-    createdAt: props.task?.createdAt || new Date(),
+    createdAt: props.task?.createdAt,
     updatedAt: new Date(),
   }
 
   emit('close', result)
 }
 
-function handleCancel() {
-  emit('dismiss', 'cancel')
+async function handleCancel() {
+  // Если есть несохранённые изменения, показываем подтверждение
+  if (isDirty.value) {
+    try {
+      const confirmed = await modal.open<boolean>(
+        ConfirmDialog,
+        {
+          message: t('task.unsavedChanges') || 'You have unsaved changes. Are you sure you want to close?',
+          title: t('common.warning') || 'Warning',
+          confirmText: t('task.discardChanges') || 'Discard Changes',
+          cancelText: t('common.cancel'),
+          danger: true,
+        },
+        { size: 'sm' },
+      )
+      if (confirmed) {
+        emit('dismiss', 'cancel')
+      }
+      // Если не подтвердили - ничего не делаем, модалка остаётся открытой
+    } catch (error) {
+      // Подтверждение отменено, ничего не делаем
+    }
+  } else {
+    // Нет изменений - просто закрываем
+    emit('dismiss', 'cancel')
+  }
 }
 </script>
 
@@ -142,6 +191,12 @@ function handleCancel() {
           placeholder="frontend, bug, urgent"
         />
       </div>
+    </div>
+
+    <!-- Dirty indicator -->
+    <div v-if="isDirty" class="dirty-indicator">
+      <AppIcon name="AlertCircle" :size="16" />
+      <span>{{ t('task.unsavedChangesIndicator') || 'Unsaved changes' }}</span>
     </div>
 
     <!-- Actions -->
@@ -221,6 +276,18 @@ function handleCancel() {
 .form-textarea {
   resize: vertical;
   min-height: 100px;
+}
+
+.dirty-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-warning-light);
+  color: var(--color-warning-dark);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: var(--font-medium);
 }
 
 .form-actions {
