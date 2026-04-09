@@ -23,6 +23,7 @@ export default {
     kanban: 'Канбан',
     calendar: 'Календарь',
     tasks: 'Задачи',
+    list: 'Список',
   },
   task: {
     title: 'Название',

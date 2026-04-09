@@ -15,7 +15,7 @@ const tasksStore = useTasksStore()
 const tabs = [
   { name: 'tasks-kanban', label: t('nav.kanban'), icon: 'Columns3' },
   { name: 'tasks-calendar', label: t('nav.calendar'), icon: 'Calendar' },
-  { name: 'tasks-list', label: t('nav.tasks'), icon: 'List' },
+  { name: 'tasks-list', label: t('nav.list'), icon: 'List' },
 ]
 
 async function openAddTaskModal() {
