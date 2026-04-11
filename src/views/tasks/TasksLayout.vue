@@ -5,6 +5,7 @@ import { useModal } from '@/composables/useModal'
 import { useTasksStore } from '@/stores/tasks'
 import TaskFormModal from '@/components/tasks/TaskFormModal.vue'
 import AppIcon from '@/components/common/AppIcon.vue'
+import Button from 'primevue/button'
 import type { Task } from '@/types'
 
 const { t } = useI18n()
@@ -44,10 +45,12 @@ async function openAddTaskModal() {
         </RouterLink>
       </div>
 
-      <button class="btn-add" @click="openAddTaskModal">
-        <AppIcon name="Plus" :size="20" />
-        {{ t('task.addTask') }}
-      </button>
+      <Button
+        @click="openAddTaskModal"
+        icon="pi pi-plus"
+        :label="t('task.addTask')"
+        severity="success"
+      />
     </div>
 
     <div class="tasks-content">
@@ -103,28 +106,6 @@ async function openAddTaskModal() {
 .tab.active {
   background-color: var(--color-primary);
   color: white;
-}
-
-.btn-add {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: var(--radius-lg);
-  font-size: var(--font-md);
-  font-weight: var(--font-semibold);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  box-shadow: var(--shadow-sm);
-}
-
-.btn-add:hover {
-  background-color: var(--color-primary-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
 }
 
 .tasks-content {

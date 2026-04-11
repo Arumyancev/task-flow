@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AppIcon from '@/components/common/AppIcon.vue'
 import { useI18n } from 'vue-i18n'
+import Button from 'primevue/button'
 
 interface Props {
   modalId: string
@@ -47,14 +48,20 @@ function handleCancel() {
     </div>
 
     <div class="dialog-actions">
-      <button type="button" class="btn btn-secondary" @click="handleCancel">
-        <AppIcon name="X" :size="18" />
-        {{ cancelText || t('common.cancel') }}
-      </button>
-      <button type="button" class="btn" :class="danger ? 'btn-danger' : 'btn-primary'" @click="handleConfirm">
-        <AppIcon name="Check" :size="18" />
-        {{ confirmText || t('common.delete') }}
-      </button>
+      <Button
+        type="button"
+        :label="cancelText || t('common.cancel')"
+        icon="pi pi-times"
+        severity="secondary"
+        @click="handleCancel"
+      />
+      <Button
+        type="button"
+        :label="confirmText || t('common.delete')"
+        :icon="danger ? 'pi pi-trash' : 'pi pi-check'"
+        :severity="danger ? 'danger' : 'success'"
+        @click="handleConfirm"
+      />
     </div>
   </div>
 </template>
@@ -109,53 +116,5 @@ function handleCancel() {
   width: 100%;
   justify-content: center;
   padding-top: var(--spacing-md);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--font-md);
-  font-weight: var(--font-medium);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  min-width: 120px;
-  justify-content: center;
-}
-
-.btn-primary {
-  background-color: var(--color-primary);
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: var(--color-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-danger {
-  background-color: var(--color-danger);
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: #dc2626;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-secondary {
-  background-color: var(--color-background-soft);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-}
-
-.btn-secondary:hover {
-  background-color: var(--color-background-mute);
-  border-color: var(--color-border-hover);
 }
 </style>

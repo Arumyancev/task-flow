@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n'
 import AppIcon from '@/components/common/AppIcon.vue'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 import { useModal } from '@/composables/useModal'
+import Button from 'primevue/button'
 
 interface Props {
   task?: Task
@@ -201,14 +202,19 @@ async function handleCancel() {
 
     <!-- Actions -->
     <div class="form-actions">
-      <button type="button" class="btn btn-secondary" @click="handleCancel">
-        <AppIcon name="X" :size="18" />
-        {{ t('common.cancel') }}
-      </button>
-      <button type="submit" class="btn btn-primary">
-        <AppIcon :name="task ? 'Save' : 'Plus'" :size="18" />
-        {{ task ? t('common.save') : t('common.create') }}
-      </button>
+      <Button
+        type="button"
+        :label="t('common.cancel')"
+        icon="pi pi-times"
+        severity="secondary"
+        @click="handleCancel"
+      />
+      <Button
+        type="submit"
+        :label="task ? t('common.save') : t('common.create')"
+        :icon="task ? 'pi pi-save' : 'pi pi-plus'"
+        severity="success"
+      />
     </div>
   </form>
 </template>
@@ -296,41 +302,6 @@ async function handleCancel() {
   gap: var(--spacing-md);
   padding-top: var(--spacing-md);
   border-top: 1px solid var(--color-border);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--font-md);
-  font-weight: var(--font-medium);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.btn-primary {
-  background-color: var(--color-primary);
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: var(--color-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-secondary {
-  background-color: var(--color-background-soft);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-}
-
-.btn-secondary:hover {
-  background-color: var(--color-background-mute);
-  border-color: var(--color-border-hover);
 }
 
 @media (max-width: 640px) {
