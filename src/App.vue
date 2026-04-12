@@ -14,7 +14,7 @@ const appClass = computed(() => ({
 </script>
 
 <template>
-  <div :class="appClass">
+  <div class="app-container" :class="appClass">
     <MainLayout>
       <RouterView />
     </MainLayout>

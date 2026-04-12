@@ -181,6 +181,14 @@ body {
 /* App Container */
 #app {
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 

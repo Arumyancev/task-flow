@@ -45,17 +45,19 @@ const route = useRoute()
       </div>
     </header>
     <main class="main">
-      <slot />
+      <div class="main-content">
+        <slot />
+      </div>
     </main>
   </div>
 </template>
 
 <style scoped>
 .layout {
-  height: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  min-height: 0;
 }
 
 .header {
@@ -165,11 +167,17 @@ const route = useRoute()
 }
 
 .main {
-  flex: 1 1 auto;
-  width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.main-content {
+  max-width: 1400px;
   margin: 0 auto;
   padding: var(--spacing-xl) var(--spacing-lg);
-  overflow: auto;
+  width: 100%;
 }
 
 @media (max-width: 768px) {
