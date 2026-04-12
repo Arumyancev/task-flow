@@ -38,19 +38,6 @@ function handleDragChange(status: TaskStatus, evt: any) {
   }
 }
 
-async function openAddTaskModal(defaultStatus?: TaskStatus) {
-  try {
-    const result = await modal.open<Task>(
-      TaskFormModal,
-      defaultStatus ? { task: { status: defaultStatus } as Partial<Task> } : {},
-      { title: t('task.addTask'), size: 'md' },
-    )
-    tasksStore.addTask(result)
-  } catch (error) {
-    // Modal dismissed
-  }
-}
-
 async function openEditTaskModal(task: Task) {
   try {
     const result = await modal.open<Task>(
@@ -112,10 +99,6 @@ async function handleDeleteTask(task: Task) {
               />
             </template>
           </draggable>
-          <button class="add-task-btn" @click="openAddTaskModal(column.status)">
-            <AppIcon name="Plus" :size="16" />
-            {{ t('task.addTask') }}
-          </button>
         </div>
       </div>
     </div>
@@ -137,7 +120,9 @@ async function handleDeleteTask(task: Task) {
   background-color: var(--color-background-soft);
   border-radius: var(--radius-lg);
   padding: var(--spacing-md);
-  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  min-height: 600px;
 }
 
 .column-header {
@@ -176,37 +161,24 @@ async function handleDeleteTask(task: Task) {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-}
-
-.add-task-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-  width: 100%;
-  padding: var(--spacing-sm);
-  background-color: transparent;
-  color: var(--color-text-secondary);
-  border: 2px dashed var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--font-sm);
-  font-weight: var(--font-medium);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.add-task-btn:hover {
-  background-color: var(--color-background-soft);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  flex: 1;
+  min-height: 0;
 }
 
 .drag-area {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-  min-height: 50px;
   flex: 1;
+  min-height: 100px;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.drag-area:empty {
+  background-color: var(--color-surface);
+  border: 2px dashed var(--color-border);
 }
 
 .drag-area :deep(.sortable-ghost) {
