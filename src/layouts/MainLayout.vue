@@ -17,7 +17,9 @@ const route = useRoute()
     <header class="header">
       <div class="header-content">
         <div class="header-left">
-          <h1 class="logo">{{ t('common.appName') }}</h1>
+          <RouterLink to="/" class="logo-link">
+            <h1 class="logo">{{ t('common.appName') }}</h1>
+          </RouterLink>
         </div>
         <nav class="nav">
           <RouterLink to="/" :class="{ active: route.name === 'dashboard' }">
@@ -83,11 +85,21 @@ const route = useRoute()
   align-items: center;
 }
 
+.logo-link {
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+
+.logo-link:hover {
+  opacity: 0.8;
+}
+
 .logo {
   font-size: var(--font-xl);
   font-weight: 700;
   color: var(--color-primary);
   margin: 0;
+  cursor: pointer;
 }
 
 .nav {
