@@ -42,10 +42,10 @@ export default {
     unsavedChangesIndicator: 'Несохранённые изменения',
   },
   status: {
-    todo: 'К выполнению',
+    todo: 'Новая',
     in_progress: 'В процессе',
     review: 'На проверке',
-    done: 'Завершено',
+    done: 'Завершена',
     all: 'Все статусы',
   },
   priority: {
@@ -57,9 +57,10 @@ export default {
   },
   stats: {
     total: 'Всего задач',
-    done: 'Завершено',
+    done: 'Завершена',
     inProgress: 'В процессе',
-    pending: 'Ожидает',
+    pending: 'Новая',
+    completed: 'Завершена',
   },
   locale: {
     en: 'English',

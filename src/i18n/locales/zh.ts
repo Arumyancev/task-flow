@@ -42,10 +42,10 @@ export default {
     unsavedChangesIndicator: 'Unsaved changes',
   },
   status: {
-    todo: 'To Do',
+    todo: 'New',
     in_progress: 'In Progress',
     review: 'Review',
-    done: 'Done',
+    done: 'Completed',
     all: 'All Status',
   },
   priority: {
@@ -59,7 +59,8 @@ export default {
     total: 'Total Tasks',
     done: 'Completed',
     inProgress: 'In Progress',
-    pending: 'Pending',
+    pending: 'New',
+    completed: 'Completed',
   },
   locale: {
     en: 'English',
