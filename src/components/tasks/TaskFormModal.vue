@@ -30,6 +30,37 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const modal = useModal()
 
+// Перехватываем закрытие модалки (крестик, ESC, backdrop)
+const originalDismiss = async (reason?: string) => {
+  if (isDirty.value) {
+    try {
+      const confirmed = await modal.open<boolean>(
+        ConfirmDialog,
+        {
+          message: t('task.unsavedChanges') || 'You have unsaved changes. Are you sure you want to close?',
+          title: t('common.warning') || 'Warning',
+          confirmText: t('task.discardChanges') || 'Discard Changes',
+          cancelText: t('common.cancel'),
+          danger: true,
+        },
+        { size: 'sm' },
+      )
+      if (confirmed) {
+        emit('dismiss', reason)
+      }
+    } catch (error) {
+      // Подтверждение отменено, ничего не делаем
+    }
+  } else {
+    emit('dismiss', reason)
+  }
+}
+
+// Экспортируем функцию для вызова из ModalContainer
+defineExpose({
+  handleDismiss: originalDismiss,
+})
+
 // Form data
 const form = ref({
   title: props.task?.title || '',
@@ -195,10 +226,7 @@ async function handleCancel() {
     </div>
 
     <!-- Dirty indicator -->
-    <div v-if="isDirty" class="dirty-indicator">
-      <AppIcon name="AlertCircle" :size="16" />
-      <span>{{ t('task.unsavedChangesIndicator') || 'Unsaved changes' }}</span>
-    </div>
+    <!-- REMOVED: Unsaved changes indicator -->
 
     <!-- Actions -->
     <div class="form-actions">
@@ -282,18 +310,6 @@ async function handleCancel() {
 .form-textarea {
   resize: vertical;
   min-height: 100px;
-}
-
-.dirty-indicator {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--color-warning-light);
-  color: var(--color-warning-dark);
-  border-radius: var(--radius-md);
-  font-size: var(--font-sm);
-  font-weight: var(--font-medium);
 }
 
 .form-actions {

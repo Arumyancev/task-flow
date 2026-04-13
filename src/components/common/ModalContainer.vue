@@ -1,17 +1,26 @@
 <script setup lang="ts">
 import { useModalStore } from '@/stores/modal'
 import { storeToRefs } from 'pinia'
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const modalStore = useModalStore()
 const { modals } = storeToRefs(modalStore)
+
+// Refs для компонентов модалок
+const componentRefs = ref<Map<string, any>>(new Map())
+
+function setComponentRef(modalId: string, el: any) {
+  if (el) {
+    componentRefs.value.set(modalId, el)
+  }
+}
 
 // Handle ESC key
 function handleEscape(event: KeyboardEvent) {
   if (event.key === 'Escape' && modals.value.length > 0) {
     const lastModal = modals.value[modals.value.length - 1]
     if (lastModal && lastModal.options.closable && !lastModal.options.persistent) {
-      modalStore.dismiss(lastModal.id, 'escape')
+      handleModalDismiss(lastModal.id, 'escape')
     }
   }
 }
@@ -26,7 +35,18 @@ onUnmounted(() => {
 
 function handleBackdropClick(modalId: string, persistent?: boolean, closable?: boolean) {
   if (!persistent && closable) {
-    modalStore.dismiss(modalId, 'backdrop')
+    handleModalDismiss(modalId, 'backdrop')
+  }
+}
+
+function handleModalDismiss(modalId: string, reason?: string) {
+  const componentRef = componentRefs.value.get(modalId)
+  if (componentRef && typeof componentRef.handleDismiss === 'function') {
+    // Если у компонента есть handleDismiss, вызываем его
+    componentRef.handleDismiss(reason)
+  } else {
+    // Иначе просто закрываем
+    modalStore.dismiss(modalId, reason)
   }
 }
 
@@ -66,7 +86,7 @@ function getSizeClass(size?: string) {
             <button
               v-if="modal.options.closable"
               class="modal-close"
-              @click="modalStore.dismiss(modal.id, 'close-button')"
+              @click="handleModalDismiss(modal.id, 'close-button')"
               aria-label="Close"
             >
               ✕
@@ -77,6 +97,7 @@ function getSizeClass(size?: string) {
           <div class="modal-content">
             <component
               :is="modal.component"
+              :ref="(el: any) => setComponentRef(modal.id, el)"
               v-bind="modal.props"
               :modal-id="modal.id"
               @close="(result: any) => modalStore.close(modal.id, result)"
