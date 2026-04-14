@@ -69,11 +69,11 @@ function getSizeClass(size?: string) {
         v-for="modal in modals"
         :key="modal.id"
         class="modal-wrapper"
-        @click.self="
-          handleBackdropClick(modal.id, modal.options.persistent, modal.options.closable)
-        "
       >
-        <div class="modal-backdrop"></div>
+        <div 
+          class="modal-backdrop"
+          @click="handleBackdropClick(modal.id, modal.options.persistent, modal.options.closable)"
+        ></div>
         <div
           class="modal"
           :class="[getSizeClass(modal.options.size), modal.options.customClass]"
