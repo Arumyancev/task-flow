@@ -5,11 +5,18 @@ import { Theme, Locale } from '@/types'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import AppIcon from '@/components/common/AppIcon.vue'
+import Select from 'primevue/select'
 
 const { currentTheme, toggleTheme } = useTheme()
 const { currentLocale, setLocale } = useLocale()
 const { t } = useI18n()
 const route = useRoute()
+
+const localeOptions = [
+  { label: 'EN', value: Locale.EN },
+  { label: 'RU', value: Locale.RU },
+  { label: 'ZH', value: Locale.ZH },
+]
 </script>
 
 <template>
@@ -30,15 +37,14 @@ const route = useRoute()
           </RouterLink>
         </nav>
         <div class="header-actions">
-          <select
-            :value="currentLocale"
-            @change="setLocale(($event.target as HTMLSelectElement).value as Locale)"
+          <Select
+            :modelValue="currentLocale"
+            @update:modelValue="setLocale($event as Locale)"
+            :options="localeOptions"
+            optionLabel="label"
+            optionValue="value"
             class="locale-select"
-          >
-            <option :value="Locale.EN">{{ t('locale.en') }}</option>
-            <option :value="Locale.RU">{{ t('locale.ru') }}</option>
-            <option :value="Locale.ZH">{{ t('locale.zh') }}</option>
-          </select>
+          />
           <button @click="toggleTheme" class="theme-toggle" :title="t('theme.toggle')">
             <AppIcon v-if="currentTheme === Theme.LIGHT" name="Moon" :size="20" />
             <AppIcon v-else name="Sun" :size="20" />
@@ -133,28 +139,7 @@ const route = useRoute()
 }
 
 .locale-select {
-  padding: var(--spacing-sm) var(--spacing-xl) var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right var(--spacing-xs) center;
-  appearance: none;
-  color: var(--color-text);
-  font-size: var(--font-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.locale-select:hover {
-  border-color: var(--color-border-hover);
-}
-
-.locale-select:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-light);
+  min-width: 80px;
 }
 
 .theme-toggle {

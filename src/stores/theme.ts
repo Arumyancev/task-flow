@@ -16,6 +16,7 @@ export const useThemeStore = defineStore('theme', () => {
   // Apply theme to document
   function applyTheme(theme: Theme) {
     document.documentElement.setAttribute('data-theme', theme)
+    document.documentElement.classList.toggle('dark-mode', theme === Theme.DARK)
   }
 
   // Watch theme changes and save to localStorage

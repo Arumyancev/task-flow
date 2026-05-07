@@ -9,6 +9,10 @@ import { useI18n } from 'vue-i18n'
 import { useModal } from '@/composables/useModal'
 import { TaskStatus, TaskPriority } from '@/types'
 import type { Task } from '@/types'
+import InputText from 'primevue/inputtext'
+import Select from 'primevue/select'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
 const tasksStore = useTasksStore()
 const { tasks } = storeToRefs(tasksStore)
@@ -18,6 +22,22 @@ const modal = useModal()
 const searchQuery = ref('')
 const selectedStatus = ref<TaskStatus | 'all'>('all')
 const selectedPriority = ref<TaskPriority | 'all'>('all')
+
+const statusOptions = computed(() => [
+  { label: t('status.all') || 'All Status', value: 'all' },
+  { label: t('status.todo'), value: TaskStatus.TODO },
+  { label: t('status.in_progress'), value: TaskStatus.IN_PROGRESS },
+  { label: t('status.review'), value: TaskStatus.REVIEW },
+  { label: t('status.done'), value: TaskStatus.DONE },
+])
+
+const priorityOptions = computed(() => [
+  { label: t('priority.all') || 'All Priority', value: 'all' },
+  { label: t('priority.low'), value: TaskPriority.LOW },
+  { label: t('priority.medium'), value: TaskPriority.MEDIUM },
+  { label: t('priority.high'), value: TaskPriority.HIGH },
+  { label: t('priority.urgent'), value: TaskPriority.URGENT },
+])
 
 const filteredTasks = computed(() => {
   return tasks.value.filter((task) => {
@@ -87,32 +107,34 @@ async function handleDeleteTask(task: Task) {
   <div class="tasks">
     <div class="filters">
       <div class="filter-group">
-        <input
-          v-model="searchQuery"
-          type="text"
-          class="search-input"
-          :placeholder="t('common.search')"
+        <IconField>
+          <InputIcon class="pi pi-search" />
+          <InputText
+            v-model="searchQuery"
+            :placeholder="t('common.search')"
+            fluid
+          />
+        </IconField>
+      </div>
+
+      <div class="filter-group">
+        <Select
+          v-model="selectedStatus"
+          :options="statusOptions"
+          optionLabel="label"
+          optionValue="value"
+          fluid
         />
       </div>
 
       <div class="filter-group">
-        <select v-model="selectedStatus" class="filter-select">
-          <option value="all">{{ t('status.all') || 'All Status' }}</option>
-          <option :value="TaskStatus.TODO">{{ t('status.todo') }}</option>
-          <option :value="TaskStatus.IN_PROGRESS">{{ t('status.in_progress') }}</option>
-          <option :value="TaskStatus.REVIEW">{{ t('status.review') }}</option>
-          <option :value="TaskStatus.DONE">{{ t('status.done') }}</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <select v-model="selectedPriority" class="filter-select">
-          <option value="all">{{ t('priority.all') || 'All Priority' }}</option>
-          <option :value="TaskPriority.LOW">{{ t('priority.low') }}</option>
-          <option :value="TaskPriority.MEDIUM">{{ t('priority.medium') }}</option>
-          <option :value="TaskPriority.HIGH">{{ t('priority.high') }}</option>
-          <option :value="TaskPriority.URGENT">{{ t('priority.urgent') }}</option>
-        </select>
+        <Select
+          v-model="selectedPriority"
+          :options="priorityOptions"
+          optionLabel="label"
+          optionValue="value"
+          fluid
+        />
       </div>
 
       <div class="filter-count">
@@ -225,34 +247,6 @@ async function handleDeleteTask(task: Task) {
   font-size: var(--font-sm);
   font-weight: var(--font-medium);
   white-space: nowrap;
-}
-
-.search-input,
-.filter-select {
-  width: 100%;
-  padding: var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  font-size: var(--font-md);
-  transition: all var(--transition-fast);
-}
-
-.filter-select {
-  padding-right: var(--spacing-xl);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right var(--spacing-sm) center;
-  appearance: none;
-  cursor: pointer;
-}
-
-.search-input:focus,
-.filter-select:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 
 .tasks-table {

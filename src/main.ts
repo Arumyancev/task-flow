@@ -21,8 +21,12 @@ app.use(PrimeVue, {
   theme: {
     preset: Aura,
     options: {
+      cssLayer: false,
       darkModeSelector: '.dark-mode',
     },
+  },
+  zIndex: {
+    overlay: 1100,
   },
 })
 
