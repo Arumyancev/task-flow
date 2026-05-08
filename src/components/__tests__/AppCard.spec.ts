@@ -1,56 +1,66 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
-import AppCard from '../common/AppCard.vue'
+import AppCard from '@/components/common/AppCard.vue'
 
 describe('AppCard', () => {
-  it('renders properly', () => {
+  it('renders with title prop', () => {
     const wrapper = mount(AppCard, {
-      props: {
-        title: 'Test Card',
-        icon: '📊',
-      },
-      slots: {
-        default: 'Card content',
-      },
+      props: { title: 'Test Card' },
     })
 
     expect(wrapper.text()).toContain('Test Card')
-    expect(wrapper.text()).toContain('📊')
-    expect(wrapper.text()).toContain('Card content')
+    expect(wrapper.find('.card-header').exists()).toBe(true)
+    expect(wrapper.find('.card-title').exists()).toBe(true)
   })
 
-  it('renders without title and icon', () => {
-    const wrapper = mount(AppCard, {
-      slots: {
-        default: 'Card content',
-      },
-    })
+  it('does not render header without title', () => {
+    const wrapper = mount(AppCard)
 
     expect(wrapper.find('.card-header').exists()).toBe(false)
-    expect(wrapper.text()).toContain('Card content')
+    expect(wrapper.find('.card-title').exists()).toBe(false)
   })
 
-  it('shows loading state', () => {
+  it('shows loading spinner when loading is true', () => {
     const wrapper = mount(AppCard, {
-      props: {
-        loading: true,
-      },
+      props: { loading: true },
     })
 
     expect(wrapper.find('.loading').exists()).toBe(true)
     expect(wrapper.find('.spinner').exists()).toBe(true)
   })
 
-  it('hides content when loading', () => {
+  it('hides slot content when loading', () => {
     const wrapper = mount(AppCard, {
-      props: {
-        loading: true,
-      },
+      props: { loading: true },
       slots: {
-        default: 'Card content',
+        default: '<div class="slot-content">Content</div>',
       },
     })
 
-    expect(wrapper.text()).not.toContain('Card content')
+    expect(wrapper.find('.loading').exists()).toBe(true)
+    expect(wrapper.find('.slot-content').exists()).toBe(false)
+  })
+
+  it('renders slot content when not loading', () => {
+    const wrapper = mount(AppCard, {
+      slots: {
+        default: '<div class="slot-content">Content</div>',
+      },
+    })
+
+    expect(wrapper.find('.slot-content').exists()).toBe(true)
+    expect(wrapper.find('.loading').exists()).toBe(false)
+  })
+
+  it('renders title and slot content together', () => {
+    const wrapper = mount(AppCard, {
+      props: { title: 'Dashboard' },
+      slots: {
+        default: '<span>Some content</span>',
+      },
+    })
+
+    expect(wrapper.text()).toContain('Dashboard')
+    expect(wrapper.text()).toContain('Some content')
   })
 })

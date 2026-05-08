@@ -1,23 +1,20 @@
 <script setup lang="ts">
 interface Props {
   title?: string
-  icon?: string
   loading?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
   title: '',
-  icon: '',
   loading: false,
 })
-
 
 </script>
 
 <template>
   <div class="card">
-    <div v-if="title || icon" class="card-header">
-      <h3 v-if="title" class="card-title">{{ title }}</h3>
+    <div v-if="title" class="card-header">
+      <h3 class="card-title">{{ title }}</h3>
     </div>
     <div class="card-content">
       <div v-if="loading" class="loading">
@@ -48,10 +45,6 @@ withDefaults(defineProps<Props>(), {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-}
-
-.card-icon {
-  font-size: var(--font-2xl);
 }
 
 .card-title {
